@@ -8,19 +8,12 @@ from geopy.distance import geodesic
 import random
 import geocoder
 
-api_key = "sk-proj-7ZRLrlCZtcvQRmhvmH77T3BlbkFJWgroXKO98L4MXUlf9me1"
+api_key = "sk-proj-7ZRLrlCZtcvQRmhvmH77T3BlbkFJWgroXKO98L4MXUlf9me1" # OPEN-AI API key - DALL-e 3 version used
 client = OpenAI(api_key=api_key)
 
-
 def display_app():
-    """
-    Displays the Streamlit app with a background color.
-    """
-
-    # Set background color (replace with your desired color)
-    bg_color = "#0A135E"  # Example: Light gray
-
-    # Inject CSS with background color
+    
+    bg_color = "#0A135E"
     page_bg_img = f'''
   <style>
     body {{
@@ -30,9 +23,7 @@ def display_app():
   '''
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
-
 display_app()
-
 
 def display_page1():
     st.image('C://Users/admin/PycharmProjects/myntra_hackathon/src/header.png')
@@ -47,7 +38,7 @@ def display_page1():
         else:
             with st.spinner("Generating image..."):
                 try:
-                    # Construct the prompt
+                    # Constructing promts based on user's needs
                     prompt = (
                         f"Generate a realistic image of a custom dress based on the following description: {user_description}. "
                         "The dress should be shown in a full view, displaying both the front side clearly. "
@@ -56,7 +47,7 @@ def display_page1():
                         "Include fine details of the fabric, stitching, and design elements to make the dress look high-quality and desirable. As realistic as possible."
                     )
 
-                    # Generate the image
+                    # Image generation
                     response = client.images.generate(
                         model="dall-e-3",
                         prompt=prompt,
@@ -65,10 +56,10 @@ def display_page1():
                         n=1,
                     )
 
-                    # Get the image URL
+                    # URL of the image obtained
                     image_url = response.data[0].url
 
-                    # Display the image
+                    # Display image
                     response = requests.get(image_url)
                     img = Image.open(BytesIO(response.content))
                     st.image(img, caption="Generated Dress Image", use_column_width=True)
@@ -76,9 +67,8 @@ def display_page1():
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 
-    # Button with clear text and improved styling
     if st.button("View Similar designs", key="page1_button"):
-        st.session_state["page"] = "page2"  # Update session state to trigger page change
+        st.session_state["page"] = "page2" 
 
 
 def display_page2():
@@ -97,7 +87,6 @@ def display_page2():
             locations.append((new_latitude, new_longitude))
         return locations
 
-    # Function to generate unique random names
     def generate_random_names(num_names, seed):
         random.seed(seed)
         boutique_names = [
@@ -108,13 +97,11 @@ def display_page2():
             raise ValueError("Number of names requested exceeds available unique names.")
         return random.sample(boutique_names, k=num_names)
 
-    # Function to generate star rating
     def generate_star_rating(rating):
         full_stars = int(rating)
         half_star = 1 if rating % 1 >= 0.5 else 0
         return '⭐' * full_stars + '✰' * half_star
 
-    # Get the current location
     def get_current_location():
         try:
             g = geocoder.ip('me')
@@ -126,11 +113,9 @@ def display_page2():
 
     current_location = get_current_location()
 
-    # Set max distance and seed
     max_distance = 0.1
     seed = 42
 
-    # Generate random data
     random_locations = generate_random_locations(current_location, max_distance, seed)
     random.seed(seed)
     ratings = [round(random.uniform(3.5, 5.0), 1) for _ in range(10)]
@@ -160,7 +145,6 @@ def display_page2():
         lambda row: geodesic(current_location, (row['latitude'], row['longitude'])).km, axis=1)
     nearby_boutiques = boutiques.sort_values(by=['distance', 'rating'], ascending=[True, False])
 
-    # Streamlit App
     st.markdown(
         """
         <style>
@@ -196,9 +180,7 @@ def display_page2():
             st.markdown(f"<p style='color: #FF5733;'>{generate_star_rating(row['rating'])}</p>", unsafe_allow_html=True)
             st.markdown("<hr>", unsafe_allow_html=True)
 
-
-# Main app logic
-page = st.session_state.get("page", "page1")  # Default to page1 initially
+page = st.session_state.get("page", "page1") 
 
 if page == "page1":
     display_page1()
