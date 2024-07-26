@@ -8,7 +8,7 @@ from geopy.distance import geodesic
 import random
 import geocoder
 
-api_key = "sk-proj-7ZRLrlCZtcvQRmhvmH77T3BlbkFJWgroXKO98L4MXUlf9me1" # OPEN-AI API key - DALL-e 3 version used
+api_key = "Your API key" # OPEN-AI API key - DALL-e 3 version used
 client = OpenAI(api_key=api_key)
 
 def display_app():
